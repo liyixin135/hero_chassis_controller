@@ -2,8 +2,6 @@
 // Created by xin on 23-1-4.
 //
 
-//#include "../include/hero_chassis_controller.h"
-
 #include "hero_chassis_controller.h"
 #include <pluginlib/class_list_macros.hpp>
 #include <memory>
@@ -22,10 +20,10 @@ namespace hero_chassis_controller
         controller_nh.getParam("Wheel_Base", Wheel_Base);
 
         //get joint handle from hardware interface
-        front_left_joint_ = effort_joint_interface->getHandle("front_left_wheel_joint");
-        front_right_joint_ = effort_joint_interface->getHandle("front_right_wheel_joint");
-        back_left_joint_ = effort_joint_interface->getHandle("back_left_wheel_joint");
-        back_right_joint_ = effort_joint_interface->getHandle("back_right_wheel_joint");
+        front_left_joint_ = effort_joint_interface->getHandle("left_front_wheel_joint");
+        front_right_joint_ = effort_joint_interface->getHandle("right_front_wheel_joint");
+        back_left_joint_ = effort_joint_interface->getHandle("left_back_wheel_joint");
+        back_right_joint_ = effort_joint_interface->getHandle("right_back_wheel_joint");
 
         //load PID Controller using gains set on parameter server
         pid1_controller_.init(ros::NodeHandle(controller_nh, "pid1"));
@@ -128,8 +126,6 @@ namespace hero_chassis_controller
 //                        vel_rte[i] = vel_cmd[i];
 //                }
 //            }
-}
-
     void HeroChassisController::compute_chassis_velocity()
     {
         Vxa = (vel_act[1] + vel_act[2] + vel_act[3] + vel_act[4]) * RADIUS / 4;
@@ -137,7 +133,7 @@ namespace hero_chassis_controller
         yawa = (vel_act[1] - vel_act[2] - vel_act[3] + vel_act[4]) * RADIUS / 2 / (Wheel_Track + Wheel_Base);
     }
 
-
 }// hero_chassis_controller
+
 
 PLUGINLIB_EXPORT_CLASS( hero_chassis_controller::HeroChassisController,controller_interface::ControllerBase)

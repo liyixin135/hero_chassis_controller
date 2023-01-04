@@ -60,7 +60,7 @@ namespace hero_chassis_controller {
         double Vxe{0.0}, Vye{0.0}, yawe{0.0};
         //expected speed of the chassis
         double Vxa{}, Vya{}, yawa{};
-        actual speed of the chassis
+        //actual speed of the chassis
 //        double Angle_Acceleration{};
 //        double dt{};
         double x{0.0}, y{0.0}, th{0.0};
