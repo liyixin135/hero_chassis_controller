@@ -59,28 +59,14 @@ namespace hero_chassis_controller
         //calculate the actual speed of chassis 利用actual角速度，计算actual线速度，正运动学
         compute_chassis_velocity();
 
-        //calculate expected speed of wheels 利用期望正交分解速度计算期望角速度，逆运动学
-        compute_mecvel();
-
-        //broadcast Transform from "base_link" to "odom" 148
+        //broadcast Transform from "base_link" to "odom"
         Transform_broadcast();
 
-        //publish the odometry message over ROS 171
+        //publish the odometry message over ROS
         Odometry_publish();
 
-        if (Odom_Framecoordinate_Mode)
-        {
-            stamped_in.header.frame_id = "odom";
-            stamped_in.header.stamp = now - ros::Duration(0.003);
-            stamped_in.vector.x = Vxe;
-            stamped_in.vector.y = Vye;
-            stamped_in.vector.z = 0.0;
-            listener.waitForTransform("base_link", "odom", ros::Time(0), ros::Duration(3.0));
-            listener.lookupTransform("base_link", "odom", ros::Time(0), transform);
-            listener.transformVector("base_link", stamped_in, stamped_out);
-            Vxe = stamped_out.vector.x;
-            Vye = stamped_out.vector.y;
-        }
+        //calculate expected speed of wheels 利用期望正交分解速度计算期望角速度，逆运动学
+        compute_mecvel();
 
         //the error of wheels
         double error1 = vel_cmd[1] - vel_act[1];
