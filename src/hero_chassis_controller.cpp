@@ -19,7 +19,6 @@ namespace hero_chassis_controller
     {
         controller_nh.getParam("Wheel_Track", Wheel_Track);
         controller_nh.getParam("Wheel_Base", Wheel_Base);
-        controller_nh.getParam("Odom_Framecoordinate_Mode", Odom_Framecoordinate_Mode);
 
         //get joint handle from hardware interface
         front_left_joint_ = effort_joint_interface->getHandle("left_front_wheel_joint");
@@ -39,7 +38,7 @@ namespace hero_chassis_controller
         //Start realtime state publisher
         controller_state_publisher_ = std::make_unique < realtime_tools::RealtimePublisher < control_msgs::JointControllerState >>(controller_nh, "state", 1);
         //start command subscriber
-        sub_command = root_nh.subscribe<geometry_msgs::Twist>("cmd_vel", 1, &HeroChassisController::get_chassis_state,this);//123
+        sub_command = root_nh.subscribe<geometry_msgs::Twist>("cmd_vel", 1, &HeroChassisController::get_chassis_state,this);
 
         odom_pub = root_nh.advertise<nav_msgs::Odometry>("odom", 50);
 
@@ -50,7 +49,7 @@ namespace hero_chassis_controller
     {
         now = time;
 
-        //24读取actual角速度
+        //读取actual角速度
         vel_act[1] = front_right_joint_.getVelocity();
         vel_act[2] = front_left_joint_.getVelocity();
         vel_act[3] = back_left_joint_.getVelocity();

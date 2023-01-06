@@ -18,9 +18,9 @@
 
 #define RADIUS 0.07625
 
-namespace hero_chassis_controller {
+namespace hero_chassis_controller{
 
-    class HeroChassisController : public controller_interface::Controller<hardware_interface::EffortJointInterface> {
+    class HeroChassisController : public controller_interface::Controller<hardware_interface::EffortJointInterface>{
     public:
         HeroChassisController() = default;
         ~HeroChassisController() override;
@@ -39,7 +39,6 @@ namespace hero_chassis_controller {
 
         tf::StampedTransform transform;
         geometry_msgs::TransformStamped odom_trans;
-        geometry_msgs::Vector3Stamped stamped_in, stamped_out;
         geometry_msgs::Quaternion odom_quat;
 
         nav_msgs::Odometry odom;
@@ -53,26 +52,26 @@ namespace hero_chassis_controller {
         int loop_count_{};
         //command of four wheels
         double vel_cmd[5]{0.0, 0.0, 0.0, 0.0, 0.0};
+
         //actual velocity of wheels
         double vel_act[5]{};
-        //middle velocity of wheels
-        double vel_rte[5]{0.0, 0.0, 0.0, 0.0, 0.0};
-        double Vxe{0.0}, Vye{0.0}, yawe{0.0};
+
         //expected speed of the chassis
-        double Vxa{}, Vya{}, yawa{};
+        double Vxe{0.0}, Vye{0.0}, yawe{0.0};
+
         //actual speed of the chassis
-//        double Angle_Acceleration{};
+        double Vxa{}, Vya{}, yawa{};
+
         double dt{};
         double x{0.0}, y{0.0}, th{0.0};
         double Wheel_Track{};
         double Wheel_Base{};
-        bool Odom_Framecoordinate_Mode{};
 
         ros::Time last_time;
         ros::Time now;
 
         std::unique_ptr<
-        realtime_tools::RealtimePublisher<
+            realtime_tools::RealtimePublisher<
                 control_msgs::JointControllerState> > controller_state_publisher_;
         //call back function of subscriber
         void get_chassis_state(const geometry_msgs::TwistConstPtr &msg);
@@ -80,7 +79,6 @@ namespace hero_chassis_controller {
         void compute_mecvel();
         //calculate the speed of chassis
         void compute_chassis_velocity();
-        void compute_vel_rte();
         void Transform_broadcast();
         void Odometry_publish();
     };
