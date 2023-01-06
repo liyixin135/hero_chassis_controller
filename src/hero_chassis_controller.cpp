@@ -114,19 +114,19 @@ namespace hero_chassis_controller
 
     }
 
+    void HeroChassisController::compute_chassis_velocity()
+    {
+        Vxa = (vel_act[1] + vel_act[2] + vel_act[3] + vel_act[4]) * RADIUS / 4;
+        Vya = (vel_act[1] - vel_act[2] + vel_act[3] - vel_act[4]) * RADIUS / 4;
+        yawa = (vel_act[1] - vel_act[2] - vel_act[3] + vel_act[4]) * RADIUS / 2 / (Wheel_Track + Wheel_Base);
+    }
+
     void HeroChassisController::compute_mecvel()
     {
         vel_cmd[1] = (Vxe + Vye + yawe * (Wheel_Track + Wheel_Base) / 2) / RADIUS;
         vel_cmd[2] = (Vxe - Vye - yawe * (Wheel_Track + Wheel_Base) / 2) / RADIUS;
         vel_cmd[3] = (Vxe + Vye - yawe * (Wheel_Track + Wheel_Base) / 2) / RADIUS;
         vel_cmd[4] = (Vxe - Vye + yawe * (Wheel_Track + Wheel_Base) / 2) / RADIUS;
-    }
-
-    void HeroChassisController::compute_chassis_velocity()
-    {
-        Vxa = (vel_act[1] + vel_act[2] + vel_act[3] + vel_act[4]) * RADIUS / 4;
-        Vya = (vel_act[1] - vel_act[2] + vel_act[3] - vel_act[4]) * RADIUS / 4;
-        yawa = (vel_act[1] - vel_act[2] - vel_act[3] + vel_act[4]) * RADIUS / 2 / (Wheel_Track + Wheel_Base);
     }
 
     //里程计
