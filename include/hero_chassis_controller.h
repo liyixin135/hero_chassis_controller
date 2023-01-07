@@ -30,42 +30,37 @@ namespace hero_chassis_controller{
 
         void update(const ros::Time &time, const ros::Duration &period) override;
 
-        ros::Subscriber sub_command;
-
+        ros::Subscriber cmd_sub;
         ros::Publisher odom_pub;
 
         tf::TransformBroadcaster odom_broadcaster;
         tf::TransformListener listener;
-
         tf::StampedTransform transform;
+
         geometry_msgs::TransformStamped odom_trans;
         geometry_msgs::Quaternion odom_quat;
 
         nav_msgs::Odometry odom;
 
-        control_toolbox::Pid pid1_controller_, pid2_controller_, pid3_controller_, pid4_controller_;
-        //internal PID controllers for four wheels
+        control_toolbox::Pid pid1_controller, pid2_controller, pid3_controller, pid4_controller;
+
         hardware_interface::JointHandle
-                front_left_joint_, front_right_joint_, back_left_joint_,
-                back_right_joint_;
+                left_front_joint, right_front_joint, left_back_joint,
+                right_back_joint;
     private:
-        int loop_count_{};
-        //command of four wheels
+        int loop_count;
+        //期望角速度
         double vel_cmd[5]{0.0, 0.0, 0.0, 0.0, 0.0};
-
-        //actual velocity of wheels
-        double vel_act[5]{};
-
-        //expected speed of the chassis
+        //真实角速度
+        double vel_act[5];
+        //期望速度
         double Vxe{0.0}, Vye{0.0}, yawe{0.0};
-
-        //actual speed of the chassis
-        double Vxa{}, Vya{}, yawa{};
-
-        double dt{};
+        //真实速度
+        double Vxa, Vya, yawa;
+        double dt;
         double x{0.0}, y{0.0}, th{0.0};
-        double Wheel_Track{};
-        double Wheel_Base{};
+        double Wheel_Track;
+        double Wheel_Base;
 
         ros::Time last_time;
         ros::Time now;
@@ -73,12 +68,9 @@ namespace hero_chassis_controller{
         std::unique_ptr<
             realtime_tools::RealtimePublisher<
                 control_msgs::JointControllerState> > controller_state_publisher_;
-        //call back function of subscriber
         void get_chassis_state(const geometry_msgs::TwistConstPtr &msg);
-        //calculate the speed  of four wheels
-        void compute_mecvel();
-        //calculate the speed of chassis
-        void compute_chassis_velocity();
+        void cpt_mecvel();
+        void cpt_chassis_velocity();
         void Transform_broadcast();
         void Odometry_publish();
     };

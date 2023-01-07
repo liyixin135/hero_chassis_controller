@@ -43,8 +43,6 @@ find_package(catkin REQUIRED
 catkin_package(
     INCLUDE_DIRS
     include
-    ## This is only necessary because Eigen3 sets a non-standard EIGEN3_INCLUDE_DIR variable
-#    ${EIGEN3_INCLUDE_DIR}
     LIBRARIES
     CATKIN_DEPENDS
     roscpp
