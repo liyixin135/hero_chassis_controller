@@ -6,17 +6,14 @@
 #include <pluginlib/class_list_macros.hpp>
 #include <memory>
 
-namespace hero_chassis_controller
-{
-    HeroChassisController::~HeroChassisController()
-    {
+namespace hero_chassis_controller {
+    HeroChassisController::~HeroChassisController() {
         cmd_sub.shutdown();
         odom_pub.shutdown();
     }
 
     bool HeroChassisController::init(hardware_interface::EffortJointInterface *effort_joint_interface,
-                                     ros::NodeHandle &root_nh, ros::NodeHandle &controller_nh)
-    {
+                                     ros::NodeHandle &root_nh, ros::NodeHandle &controller_nh) {
         controller_nh.getParam("Wheel_Track", Wheel_Track);
         controller_nh.getParam("Wheel_Base", Wheel_Base);
 
@@ -45,8 +42,7 @@ namespace hero_chassis_controller
         return true;
     }
 
-    void HeroChassisController::update(const ros::Time &time, const ros::Duration &period)
-    {
+    void HeroChassisController::update(const ros::Time &time, const ros::Duration &period) {
         now = time;
         //读取真实角速度
         vel_act[1] = right_front_joint.getVelocity();
@@ -72,10 +68,8 @@ namespace hero_chassis_controller
         left_back_joint.setCommand(pid3_controller.computeCommand(error3, period));
         right_back_joint.setCommand(pid4_controller.computeCommand(error4, period));
 
-        if (loop_count % 10 == 0)
-        {
-            if (controller_state_publisher_ && controller_state_publisher_->trylock())
-            {
+        if (loop_count % 10 == 0) {
+            if (controller_state_publisher_ && controller_state_publisher_->trylock()) {
                 controller_state_publisher_->msg_.header.stamp = now;
                 controller_state_publisher_->msg_.set_point = vel_cmd[1];
                 controller_state_publisher_->msg_.process_value = vel_act[1];
@@ -99,23 +93,20 @@ namespace hero_chassis_controller
         last_time = now;
     }
 
-    void HeroChassisController::get_chassis_state(const geometry_msgs::TwistConstPtr &msg)
-    {
+    void HeroChassisController::get_chassis_state(const geometry_msgs::TwistConstPtr &msg) {
         Vxe = msg->linear.x;
         Vye = msg->linear.y;
         yawe = msg->angular.z;
 
     }
 
-    void HeroChassisController::cpt_chassis_velocity()
-    {
+    void HeroChassisController::cpt_chassis_velocity() {
         Vxa = (vel_act[1] + vel_act[2] + vel_act[3] + vel_act[4]) * RADIUS / 4;
         Vya = (vel_act[1] - vel_act[2] + vel_act[3] - vel_act[4]) * RADIUS / 4;
         yawa = (vel_act[1] - vel_act[2] - vel_act[3] + vel_act[4]) * RADIUS / 2 / (Wheel_Track + Wheel_Base);
     }
 
-    void HeroChassisController::cpt_mecvel()
-    {
+    void HeroChassisController::cpt_mecvel() {
         vel_cmd[1] = (Vxe + Vye + yawe * (Wheel_Track + Wheel_Base) / 2) / RADIUS;
         vel_cmd[2] = (Vxe - Vye - yawe * (Wheel_Track + Wheel_Base) / 2) / RADIUS;
         vel_cmd[3] = (Vxe + Vye - yawe * (Wheel_Track + Wheel_Base) / 2) / RADIUS;
@@ -123,8 +114,7 @@ namespace hero_chassis_controller
     }
 
     //里程计
-    void HeroChassisController::Transform_broadcast()
-    {
+    void HeroChassisController::Transform_broadcast() {
         dt = (now - last_time).toSec();
         double delta_x = (Vxa * cos(th) - Vya * sin(th)) * dt;
         double delta_y = (Vxa * sin(th) + Vya * cos(th)) * dt;
@@ -146,8 +136,7 @@ namespace hero_chassis_controller
         odom_broadcaster.sendTransform(odom_trans);
     }
 
-    void HeroChassisController::Odometry_publish()
-    {
+    void HeroChassisController::Odometry_publish() {
         odom.header.stamp = now;
         odom.header.frame_id = "odom";
         //set the position

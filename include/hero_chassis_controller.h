@@ -18,9 +18,9 @@
 
 #define RADIUS 0.07625
 
-namespace hero_chassis_controller{
+namespace hero_chassis_controller {
 
-    class HeroChassisController : public controller_interface::Controller<hardware_interface::EffortJointInterface>{
+    class HeroChassisController : public controller_interface::Controller<hardware_interface::EffortJointInterface> {
     public:
         HeroChassisController() = default;
         ~HeroChassisController() override;
